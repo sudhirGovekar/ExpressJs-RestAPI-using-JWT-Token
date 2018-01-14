@@ -46,15 +46,32 @@ router.post('/',function(req,res,next){
      address:req.body.address
   })
 
-saveUserSignData.save(function(err,result){
-  if(err){
+  signupModel.findOne({email:req.body.email},function(err,data){
+    if(err){
+      return res.json({
+        "status":500,
+        "Error":err
+      })
+    }
+    if(!data){
+      saveUserSignData.save(function(err,result){
+        if(err){
+          return res.json({
+            "status":500,
+            "Error":err
+          })
+        }
+        res.json({"Result":result});
+      })
+    }
+
     return res.json({
-      "status":500,
-      "Error":err
+      "status":200,
+      "Error":"Records already exist"
     })
-  }
-  res.json({"Result":result});
-})
+  })
+
+
 })
 
 module.exports = router;
